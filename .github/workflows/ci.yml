@@ -11,15 +11,11 @@ on:
       - main
       - develop
 
-
 jobs:
-
   test:
-
     runs-on: ubuntu-latest
 
     services:
-
       postgres:
         image: postgres:17
 
@@ -37,7 +33,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-
       mongodb:
         image: mongo:8
 
@@ -50,18 +45,14 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
-
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
 
       - name: Install dependencies
         working-directory: backend
@@ -69,11 +60,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
-      - name: Create test environment
+      - name: Create CI environment
         working-directory: backend
         run: |
-          cat > .env.test << 'EOF'
+          cat > .env << 'EOF'
           APP_NAME=FlowForge
           APP_VERSION=1.0.0
           DEBUG=false
@@ -88,31 +78,25 @@ jobs:
           JWT_EXPIRATION_MINUTES=60
           EOF
 
-
       - name: Run database migrations
         working-directory: backend
         run: |
           alembic upgrade head
-
 
       - name: Run tests
         working-directory: backend
         run: |
           pytest -v
 
-
   docker-build:
-
     runs-on: ubuntu-latest
 
     needs:
       - test
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
-
 
       - name: Build Docker image
         run: |
