@@ -1,0 +1,66 @@
+# services:
+#   mongodb:
+#     image: mongo:8
+#     container_name: flowforge-mongodb
+#     restart: unless-stopped
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongodb_data:/data/db
+
+#   postgres:
+#     image: postgres:17
+#     container_name: flowforge-postgres
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_DB: flowforge
+#       POSTGRES_USER: flowforge
+#       POSTGRES_PASSWORD: flowforge
+#     ports:
+#       - "5433:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   mongodb_data:
+#   postgres_data:
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: flowforge-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - postgres
+
+  mongodb:
+    image: mongo:8
+    container_name: flowforge-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:17
+    container_name: flowforge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: flowforge
+      POSTGRES_USER: flowforge
+      POSTGRES_PASSWORD: flowforge
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  mongodb_data:
+  postgres_data:
