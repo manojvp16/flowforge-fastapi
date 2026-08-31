@@ -1,3 +1,12 @@
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(
+    Path(__file__).resolve().parent.parent / ".env.test",
+    override=True,
+)
+
 from uuid import UUID
 
 import pytest
@@ -23,6 +32,7 @@ TEST_ORGANIZATION_ID = UUID(
 
 
 class TestUser:
+
     id = TEST_USER_ID
     organization_id = TEST_ORGANIZATION_ID
     is_active = True
@@ -43,7 +53,7 @@ def client():
         db.close()
         raise RuntimeError(
             "ADMIN role not found. "
-            "Run the RBAC seed before tests."
+            "Run: python -m app.db.seed"
         )
 
     TestUser.role_id = admin_role.id
